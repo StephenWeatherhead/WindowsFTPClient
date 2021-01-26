@@ -5,8 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WindowsFTPClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="600">
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Host:" />
+            <TextBox x:Name="HostTextBox" Width="75" />
+            <TextBlock Text="Username:" />
+            <TextBox x:Name="UsernameTextBox" Width="75" />
+            <TextBlock Text="Password:" />
+            <PasswordBox x:Name="PasswordTextBox" Width="75" />
+            <TextBlock Text="Port:" />
+            <TextBox x:Name="PortTextBox" Width="35" />
+            <Button x:Name="ConnectTextBox" Content="List Files!" Click="ConnectTextBox_Click" />
+        </StackPanel>
+        <DataGrid x:Name="FilesGrid" Grid.Row="1">
+            
+        </DataGrid>
+        <TextBox x:Name="LogTextBox" Grid.Row="2" AcceptsReturn="True" TextWrapping="NoWrap" VerticalScrollBarVisibility="Visible" />
     </Grid>
 </Window>
