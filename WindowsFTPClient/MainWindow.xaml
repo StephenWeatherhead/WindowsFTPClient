@@ -21,11 +21,20 @@
             <PasswordBox x:Name="PasswordTextBox" Width="75" />
             <TextBlock Text="Port:" />
             <TextBox x:Name="PortTextBox" Width="35" />
-            <Button x:Name="ConnectTextBox" Content="List Files!" Click="ConnectTextBox_Click" />
+            <Button x:Name="ConnectTextBox" Content="Connect" Click="ConnectTextBox_Click" />
         </StackPanel>
-        <DataGrid x:Name="FilesGrid" Grid.Row="1">
-            
-        </DataGrid>
         <TextBox x:Name="LogTextBox" Grid.Row="2" AcceptsReturn="True" TextWrapping="NoWrap" VerticalScrollBarVisibility="Visible" />
+        <ListView x:Name="FilesListView" Grid.Row="1">
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="Date Modified" DisplayMemberBinding="{Binding Modified}" />
+                        <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Type}" />
+                        <GridViewColumn Header="Size"  DisplayMemberBinding="{Binding Size}" />
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>

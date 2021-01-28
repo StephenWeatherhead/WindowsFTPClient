@@ -35,7 +35,7 @@ namespace WindowsFTPClient
                 client.Port = int.Parse(PortTextBox.Text);
                 client.OnLogEvent += LogEvent;
                 client.Connect();
-                FilesGrid.ItemsSource = client.GetListing();
+                FilesListView.ItemsSource = client.GetListing().Select(x => new FileViewModel(x)); ;
                 client.Disconnect();
             }
         }
