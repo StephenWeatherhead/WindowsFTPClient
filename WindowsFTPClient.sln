@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFTPClient", "WindowsFTPClient\WindowsFTPClient.csproj", "{DA60C184-9C03-4E22-BFF7-552CD17DB99E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindowsFTPClient", "WindowsFTPClient\WindowsFTPClient.csproj", "{DA60C184-9C03-4E22-BFF7-552CD17DB99E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFTPClient.ViewModels", "WindowsFTPClient.ViewModels\WindowsFTPClient.ViewModels.csproj", "{AB13138E-2379-41F0-82A3-9FDE0757AB5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFTPClient.Tests", "WindowsFTPClient.Tests\WindowsFTPClient.Tests.csproj", "{2F251AF4-730B-4118-BB33-61C6E9BB316D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{DA60C184-9C03-4E22-BFF7-552CD17DB99E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA60C184-9C03-4E22-BFF7-552CD17DB99E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA60C184-9C03-4E22-BFF7-552CD17DB99E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB13138E-2379-41F0-82A3-9FDE0757AB5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB13138E-2379-41F0-82A3-9FDE0757AB5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB13138E-2379-41F0-82A3-9FDE0757AB5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB13138E-2379-41F0-82A3-9FDE0757AB5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F251AF4-730B-4118-BB33-61C6E9BB316D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F251AF4-730B-4118-BB33-61C6E9BB316D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F251AF4-730B-4118-BB33-61C6E9BB316D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F251AF4-730B-4118-BB33-61C6E9BB316D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
