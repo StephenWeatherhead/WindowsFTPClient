@@ -11,10 +11,12 @@ namespace WindowsFTPClient.ViewModels
     {
         private Action _executeAction;
         private Func<bool> _canExecuteFunc;
+        private LoadableViewModel _loadableViewModel;
 
         private DelegateCommand(LoadableViewModel loadableViewModel, Func<bool> canExecuteFunc)
         {
             CanExecuteDependsOn(loadableViewModel, nameof(loadableViewModel.IsLoaded));
+            _loadableViewModel = loadableViewModel;
             _canExecuteFunc = canExecuteFunc;
         }
         public DelegateCommand(LoadableViewModel loadableViewModel, Action executeAction, Func<bool> canExecuteFunc) : this(loadableViewModel, canExecuteFunc)
@@ -33,7 +35,7 @@ namespace WindowsFTPClient.ViewModels
 
         public bool CanExecute(object parameter)
         {
-            return _canExecuteFunc();
+            return _loadableViewModel.IsLoaded && _canExecuteFunc();
         }
 
         public async void Execute(object parameter)
