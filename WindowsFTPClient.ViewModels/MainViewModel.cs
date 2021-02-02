@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace WindowsFTPClient.ViewModels
 {
-    public class MainViewModel
+    public class MainViewModel : LoadableViewModel
     {
         private IDialogService _dialogService;
         private MainViewModelStartParameters _startParameters;
@@ -35,9 +35,9 @@ namespace WindowsFTPClient.ViewModels
         }
         public ObservableCollection<FtpProfileViewModel> FtpProfiles { get; }
         public FtpProfileViewModel SelectedProfile { get; set; }
-        public ICommand NewProfileCommand { get; }
-        public ICommand ConnectCommand { get; }
-        public ICommand DisconnectCommand { get; }
+        public DelegateCommand NewProfileCommand { get; }
+        public DelegateCommand ConnectCommand { get; }
+        public DelegateCommand DisconnectCommand { get; }
         public FtpBrowserViewModel FtpBrowser { get; }
         public FileTransfersViewModel FileTransfers { get; }
         public string Log { get; }
