@@ -15,18 +15,18 @@ namespace WindowsFTPClient.ViewModels
 
         private DelegateCommand(LoadableViewModel loadableViewModel, Func<bool> canExecuteFunc)
         {
+            _loadableViewModel = loadableViewModel ?? throw new ArgumentNullException(nameof(loadableViewModel));
             CanExecuteDependsOn(loadableViewModel, nameof(loadableViewModel.IsLoaded));
-            _loadableViewModel = loadableViewModel;
             _canExecuteFunc = canExecuteFunc;
         }
-        public DelegateCommand(LoadableViewModel loadableViewModel, Action executeAction, Func<bool> canExecuteFunc) : this(loadableViewModel, canExecuteFunc)
+        public DelegateCommand(LoadableViewModel loadableViewModel, Action executeAction, Func<bool> canExecuteFunc = null) : this(loadableViewModel, canExecuteFunc)
         {
-            _executeAction = executeAction;
+            _executeAction = executeAction ?? throw new ArgumentNullException(nameof(executeAction));
         }
 
-        public DelegateCommand(LoadableViewModel loadableViewModel, Func<Task> executeTask, Func<bool> canExecuteFunc) : this(loadableViewModel, canExecuteFunc)
+        public DelegateCommand(LoadableViewModel loadableViewModel, Func<Task> executeTask, Func<bool> canExecuteFunc = null) : this(loadableViewModel, canExecuteFunc)
         {
-            ExecuteTask = executeTask;
+            ExecuteTask = executeTask ?? throw new ArgumentNullException(nameof(executeTask));
         }
 
         public Func<Task> ExecuteTask { get; }
@@ -35,7 +35,7 @@ namespace WindowsFTPClient.ViewModels
 
         public bool CanExecute(object parameter)
         {
-            return _loadableViewModel.IsLoaded && _canExecuteFunc();
+            return _loadableViewModel.IsLoaded && (_canExecuteFunc == null || _canExecuteFunc());
         }
 
         public async void Execute(object parameter)
