@@ -10,4 +10,8 @@
     <PackageReference Include="FluentFTP" Version="33.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WindowsFTPClient.ViewModels\WindowsFTPClient.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>
