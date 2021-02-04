@@ -7,6 +7,18 @@
         xmlns:viewModels="clr-namespace:WindowsFTPClient.ViewModels;assembly=WindowsFTPClient.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="600" d:DataContext="{d:DesignInstance viewModels:MainViewModel}" Loaded="Window_Loaded">
+    <Window.Resources>
+        <Style x:Key="DisableWhenConnected" TargetType="{x:Type Control}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                    <Setter Property="IsEnabled" Value="False" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                    <Setter Property="IsEnabled" Value="True" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -15,13 +27,13 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="Host" />
-            <TextBox Text="{Binding Host}" IsEnabled="{Binding IsConnected}" Width="75" />
+            <TextBox Style="{StaticResource DisableWhenConnected}" Text="{Binding Host}" Width="75" />
             <TextBlock Text="UserName" />
-            <TextBox Text="{Binding UserName}" IsEnabled="{Binding IsConnected}" Width="75" />
+            <TextBox Style="{StaticResource DisableWhenConnected}" Text="{Binding UserName}" Width="75" />
             <TextBlock Text="Password" />
-            <PasswordBox x:Name="PasswordTextBox" IsEnabled="{Binding IsConnected}" Width="75" LostFocus="PasswordTextBox_LostFocus" LostKeyboardFocus="PasswordTextBox_LostKeyboardFocus" />
+            <PasswordBox Style="{StaticResource DisableWhenConnected}" x:Name="PasswordTextBox" Width="75" LostFocus="PasswordTextBox_LostFocus" LostKeyboardFocus="PasswordTextBox_LostKeyboardFocus" />
             <TextBlock Text="Port" />
-            <TextBox Text="{Binding Port}" IsEnabled="{Binding IsConnected}" Width="35" />
+            <TextBox Style="{StaticResource DisableWhenConnected}" Text="{Binding Port}" Width="35" />
             <Button Content="Connect" Command="{Binding ConnectCommand}" />
             <Button Content="Disconnect" Command="{Binding DisconnectCommand}" />
         </StackPanel>

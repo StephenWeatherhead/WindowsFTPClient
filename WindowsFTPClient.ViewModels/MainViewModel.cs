@@ -120,7 +120,7 @@ namespace WindowsFTPClient.ViewModels
             {
                 if(!IsConnected)
                 {
-                    _password.Dispose();
+                    _password?.Dispose();
                     _password = value;
                 }
                 RaisePropertyChanged(nameof(Password));
