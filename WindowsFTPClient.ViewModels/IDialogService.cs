@@ -7,6 +7,5 @@ namespace WindowsFTPClient.ViewModels
     public interface IDialogService
     {
         void Show(string message);
-        FtpProfileViewModel EditFtpProfile(FtpProfileViewModel ftpProfile = null);
     }
 }

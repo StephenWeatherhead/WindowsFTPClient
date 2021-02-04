@@ -13,16 +13,19 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="2*" />
         </Grid.RowDefinitions>
-        <WrapPanel Orientation="Horizontal">
-            <Button Content="New Profile" Command="{Binding NewProfileCommand}" />
-            <Label Content="Selected Profile" />
-            <ComboBox SelectedItem="{Binding SelectedProfile}" ItemsSource="{Binding FtpProfiles}" />
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Host" />
+            <TextBox Text="{Binding Host}" IsEnabled="{Binding IsConnected}" Width="75" />
+            <TextBlock Text="UserName" />
+            <TextBox Text="{Binding UserName}" IsEnabled="{Binding IsConnected}" Width="75" />
+            <TextBlock Text="Password" />
+            <PasswordBox x:Name="PasswordTextBox" IsEnabled="{Binding IsConnected}" Width="75" LostFocus="PasswordTextBox_LostFocus" LostKeyboardFocus="PasswordTextBox_LostKeyboardFocus" />
+            <TextBlock Text="Port" />
+            <TextBox Text="{Binding Port}" IsEnabled="{Binding IsConnected}" Width="35" />
             <Button Content="Connect" Command="{Binding ConnectCommand}" />
             <Button Content="Disconnect" Command="{Binding DisconnectCommand}" />
-            <Button Content="Edit Profile" Command="{Binding EditProfileCommand}" />
-            <Button Content="Delete Profile" Command="{Binding DeleteProfileCommand}" />
-        </WrapPanel>
-        <TextBox x:Name="LogTextBox" Grid.Row="1" AcceptsReturn="True" TextWrapping="NoWrap" VerticalScrollBarVisibility="Visible" />
+        </StackPanel>
+        <TextBox x:Name="LogTextBox" Grid.Row="1" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" AcceptsReturn="True" TextWrapping="NoWrap" VerticalScrollBarVisibility="Visible" TextChanged="LogTextBox_TextChanged" />
         <ListView x:Name="FilesListView" Grid.Row="2">
             <ListView.View>
                 <GridView>

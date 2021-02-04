@@ -35,5 +35,25 @@ namespace WindowsFTPClient.Views
         {
             _viewModel.Load();
         }
+
+        private void LogTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            LogTextBox.ScrollToEnd();
+        }
+
+        private void UpdatePassword()
+        {
+            _viewModel.Password = PasswordTextBox.SecurePassword;
+        }
+
+        private void PasswordTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            UpdatePassword();
+        }
+
+        private void PasswordTextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            UpdatePassword();
+        }
     }
 }

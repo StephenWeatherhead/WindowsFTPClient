@@ -9,11 +9,6 @@ namespace WindowsFTPClient.Services
 {
     class DialogService : IDialogService
     {
-        public FtpProfileViewModel EditFtpProfile(FtpProfileViewModel ftpProfile = null)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Show(string message)
         {
             throw new NotImplementedException();

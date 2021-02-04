@@ -27,28 +27,12 @@ namespace WindowsFTPClient.ViewModels
             _ftpBrowserCreator = ftpBrowserCreator ?? throw new ArgumentNullException(nameof(ftpBrowserCreator));
             _fileTransfersViewModelCreator = fileTransfersViewModelCreator ?? throw new ArgumentNullException(nameof(fileTransfersViewModelCreator));
 
-            NewProfileCommand = new DelegateCommand(this, ExecuteNewProfile);
-            ConnectCommand = new DelegateCommand(this, ExecuteConnect, () => SelectedProfile != null && !IsConnected);
-            ConnectCommand.CanExecuteDependsOn(this, nameof(SelectedProfile));
+            ConnectCommand = new DelegateCommand(this, ExecuteConnect, () => !IsConnected);
             ConnectCommand.CanExecuteDependsOn(this, nameof(IsConnected));
-            DisconnectCommand = new DelegateCommand(this, ExecuteDisconnect, () => SelectedProfile != null && IsConnected);
-            DisconnectCommand.CanExecuteDependsOn(this, nameof(SelectedProfile));
+            DisconnectCommand = new DelegateCommand(this, ExecuteDisconnect, () => IsConnected);
             DisconnectCommand.CanExecuteDependsOn(this, nameof(IsConnected));
-            EditProfileCommand = new DelegateCommand(this, ExecuteEditProfile, ()=> SelectedProfile != null && !IsConnected);
-            EditProfileCommand.CanExecuteDependsOn(this, nameof(SelectedProfile));
-            EditProfileCommand.CanExecuteDependsOn(this, nameof(IsConnected));
-            DeleteProfileCommand = new DelegateCommand(this, ExecuteDeleteProfile, () => SelectedProfile != null && !IsConnected);
-            DeleteProfileCommand.CanExecuteDependsOn(this, nameof(SelectedProfile));
-            DeleteProfileCommand.CanExecuteDependsOn(this, nameof(IsConnected));
         }
-        private void ExecuteDeleteProfile()
-        {
-            throw new NotImplementedException();
-        }
-        private void ExecuteEditProfile()
-        {
-            throw new NotImplementedException();
-        }
+
         private async Task ExecuteDisconnect()
         {
             throw new NotImplementedException();
@@ -57,33 +41,29 @@ namespace WindowsFTPClient.ViewModels
         {
             throw new NotImplementedException();
         }
-        private void ExecuteNewProfile()
-        {
-            FtpProfileViewModel ftpProfileViewModel = _dialogService.EditFtpProfile();
-            if(ftpProfileViewModel != null)
-            {
-                FtpProfiles.Add(ftpProfileViewModel);
-                if(!IsConnected)
-                {
-                    SelectedProfile = ftpProfileViewModel;
-                }
-            }
-        }
+
 
         public void Load()
         {
             IsLoaded = true;
         }
-        public ObservableCollection<FtpProfileViewModel> FtpProfiles { get; }
-        public FtpProfileViewModel SelectedProfile { get; set; }
-        public DelegateCommand NewProfileCommand { get; }
-        public DelegateCommand DeleteProfileCommand { get; }
-        public DelegateCommand EditProfileCommand { get; }
         public DelegateCommand ConnectCommand { get; }
         public DelegateCommand DisconnectCommand { get; }
         public FtpBrowserViewModel FtpBrowser { get; }
         public FileTransfersViewModel FileTransfers { get; }
-        public string Log { get; }
+        private string _log;
+        public string Log 
+        { 
+            get
+            {
+                return _log;
+            }
+            private set
+            {
+                _log = value;
+                RaisePropertyChanged(nameof(Log));
+            }
+        }
         private bool _isConnected;
         public bool IsConnected 
         { 
@@ -95,6 +75,71 @@ namespace WindowsFTPClient.ViewModels
             {
                 _isConnected = value;
                 RaisePropertyChanged(nameof(IsConnected));
+            }
+        }
+        private string _host;
+        public string Host 
+        { 
+            get
+            {
+                return _host;
+            } 
+            set
+            {
+                if(!IsConnected)
+                {
+                    _host = value;
+                }
+                RaisePropertyChanged(nameof(Host));
+            }
+        }
+        private string _userName;
+        public string UserName
+        {
+            get
+            {
+                return _userName;
+            }
+            set
+            {
+                if(!IsConnected)
+                {
+                    _userName = value;
+                }
+                RaisePropertyChanged(nameof(UserName));
+            }
+        }
+        private SecureString _password;
+        public SecureString Password
+        {
+            get
+            {
+                return _password;
+            }
+            set
+            {
+                if(!IsConnected)
+                {
+                    _password.Dispose();
+                    _password = value;
+                }
+                RaisePropertyChanged(nameof(Password));
+            }
+        }
+        private int _port;
+        public int Port
+        {
+            get
+            {
+                return _port;
+            }
+            set
+            {
+                if (!IsConnected)
+                {
+                    _port = value;
+                }
+                RaisePropertyChanged(nameof(Port));
             }
         }
     }
