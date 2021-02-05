@@ -13,7 +13,7 @@ namespace WindowsFTPClient.Services
     {
         public IWFTPClient CreateClient(string host, string userName, SecureString password, int port)
         {
-            throw new NotImplementedException();
+            return new WFTPClient(host, userName, password, port);
         }
     }
 }

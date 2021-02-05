@@ -1,0 +1,139 @@
+﻿using FluentFTP;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Security;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using WindowsFTPClient.ViewModels;
+
+namespace WindowsFTPClient.Services
+{
+    class WFTPClient : IWFTPClient
+    {
+        public WFTPClient(string host, string userName, SecureString password, int port)
+        {
+            FtpClient = new FtpClient();
+            FtpClient.Host = host;
+            FtpClient.Credentials = new NetworkCredential(userName, password);
+            FtpClient.Port = port;
+            FtpClient.OnLogEvent = LogMessage;
+        }
+
+        private void LogMessage(FtpTraceLevel arg1, string arg2)
+        {
+            Log?.Invoke(arg1, arg2);
+        }
+
+        public FtpClient FtpClient { get; }
+        public event Action<FtpTraceLevel, string> Log;
+
+        public async Task<ServiceResult> ConnectAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                await FtpClient.ConnectAsync(cancellationToken);
+            }
+            catch (SocketException x)
+            {
+                return new ServiceResult { Success = false, ErrorMessage = x.Message };
+            }
+            catch(FtpAuthenticationException x)
+            {
+                return new ServiceResult { Success = false, ErrorMessage = x.Message };
+            }
+            return new ServiceResult { Success = true };
+        }
+
+        public Task<ServiceResult> CreateDirectoryAsync(string path, CancellationToken cancellationtoken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResult> DeleteDirectoryAsync(string path, CancellationToken cancellationtoken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResult> DeleteFileAsync(string path, CancellationToken cancellationtoken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ServiceResult> DisconnectAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                await FtpClient.DisconnectAsync(cancellationToken);
+            }
+            catch (SocketException x)
+            {
+                return new ServiceResult { Success = false, ErrorMessage = x.Message };
+            }
+            return new ServiceResult { Success = true };
+        }
+
+        public void Dispose()
+        {
+            FtpClient.Dispose();
+        }
+
+        public Task<ServiceResult<List<FtpResult>>> DownloadDirectoryAsync(string localFolder, string remoteFolder, IProgress<FtpProgress> progress, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResult<FtpResult>> DownloadFileAsync(string localPath, string remotePath, IProgress<FtpProgress> progress, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResult<List<FileViewModel>>> GetListingAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResult<string>> GetWorkingDirectoryAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResult> MoveDirectoryAsync(string path, string dest, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResult> MoveFileAsync(string path, string dest, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResult> SetFilePermissionsAsync(string path, FtpPermission owner, FtpPermission group, FtpPermission other, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResult> SetWorkingDirectoryAsync(string workingDirectory, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResult<List<FtpResult>>> UploadDirectoryAsync(string localFolder, string remoteFolder, IProgress<FtpProgress> progress, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResult<FtpStatus>> UploadFileAsync(string localPath, string remotePath, IProgress<FtpProgress> progress, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResult<int>> UploadFilesAsync(IEnumerable<string> localPaths, string remoteDir, CancellationToken cancellationToken, IProgress<FtpProgress> progress)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
