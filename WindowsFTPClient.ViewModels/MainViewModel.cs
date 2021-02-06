@@ -30,8 +30,6 @@ namespace WindowsFTPClient.ViewModels
             _ftpBrowserCreator = ftpBrowserCreator ?? throw new ArgumentNullException(nameof(ftpBrowserCreator));
             _fileTransfersViewModelCreator = fileTransfersViewModelCreator ?? throw new ArgumentNullException(nameof(fileTransfersViewModelCreator));
 
-            Port = 21;
-
             ConnectCommand = new DelegateCommand(this, ExecuteConnect, () => !IsConnected && !IsConnecting);
             ConnectCommand.CanExecuteDependsOn(this, nameof(IsConnected));
             ConnectCommand.CanExecuteDependsOn(this, nameof(IsConnecting));
@@ -39,6 +37,9 @@ namespace WindowsFTPClient.ViewModels
             DisconnectCommand.CanExecuteDependsOn(this, nameof(IsConnected));
             DisconnectCommand.CanExecuteDependsOn(this, nameof(IsConnecting));
             _log = new StringBuilder();
+            Host = string.Empty;
+            UserName = string.Empty;
+            Password = new SecureString();
         }
 
         private async Task ExecuteDisconnect()
