@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ namespace WindowsFTPClient.ViewModels
         {
             _dialogService = dialogService;
             GoCommand = new DelegateCommand(this, ExecuteGo);
+            Files = new ObservableCollection<FileViewModel>();
         }
 
         public async Task ExecuteGo()
@@ -27,14 +29,21 @@ namespace WindowsFTPClient.ViewModels
             if (!workingDirectoryResult.Success)
             {
                 _dialogService.Show(workingDirectoryResult.ErrorMessage);
+                IsLoaded = true;
                 return;
             }
+            Directory = workingDirectoryResult.Result;
             _cancellationTokenSource = new CancellationTokenSource();
             var fileListResult = await wFTPClient.GetListingAsync(_cancellationTokenSource.Token);
             if(!fileListResult.Success)
             {
                 _dialogService.Show(fileListResult.ErrorMessage);
+                IsLoaded = true;
                 return;
+            }
+            foreach(var file in fileListResult.Result)
+            {
+                Files.Add(file);
             }
             IsLoaded = true;
         }
@@ -51,6 +60,8 @@ namespace WindowsFTPClient.ViewModels
                 RaisePropertyChanged(nameof(Directory));
             }
         }
+        public ObservableCollection<FileViewModel> Files { get; }
+
         public DelegateCommand GoCommand { get; } 
     }
 }

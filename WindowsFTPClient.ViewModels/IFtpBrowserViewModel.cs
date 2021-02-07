@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WindowsFTPClient.ViewModels
 {
-    public interface IFtpBrowserViewModel
+    public interface IFtpBrowserViewModel : IDisposable
     {
         void Load(IWFTPClient wFTPClient);
     }

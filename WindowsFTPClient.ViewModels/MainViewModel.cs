@@ -46,6 +46,9 @@ namespace WindowsFTPClient.ViewModels
         {
             IsConnecting = true;
             _cancellationTokenSource = new CancellationTokenSource();
+            var ftpBrowser = FtpBrowser;
+            FtpBrowser = null;
+            ftpBrowser.Dispose();
             var result = await _wftpClient.DisconnectAsync(_cancellationTokenSource.Token);
             _wftpClient.Log -= Client_Log;
             _wftpClient.Dispose();
@@ -70,6 +73,9 @@ namespace WindowsFTPClient.ViewModels
             {
                 IsConnected = true;
                 _wftpClient = client;
+                var browser = _ftpBrowserCreator();
+                browser.Load(client);
+                FtpBrowser = browser;
             }
             else
             {
@@ -95,7 +101,19 @@ namespace WindowsFTPClient.ViewModels
         }
         public DelegateCommand ConnectCommand { get; }
         public DelegateCommand DisconnectCommand { get; }
-        public FtpBrowserViewModel FtpBrowser { get; }
+        private IFtpBrowserViewModel _ftpBrowserViewModel;
+        public IFtpBrowserViewModel FtpBrowser 
+        { 
+            get 
+            {
+                return _ftpBrowserViewModel;
+            }
+            set
+            {
+                _ftpBrowserViewModel = value;
+                RaisePropertyChanged(nameof(FtpBrowser));
+            }
+        }
         public FileTransfersViewModel FileTransfers { get; }
         private StringBuilder _log;
         public string Log 

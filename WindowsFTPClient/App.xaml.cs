@@ -30,7 +30,7 @@ namespace WindowsFTPClient
 
         private IFtpBrowserViewModel NewFtpBrowserViewModel()
         {
-            throw new NotImplementedException();
+            return new FtpBrowserViewModel(new DialogService());
         }
     }
 }

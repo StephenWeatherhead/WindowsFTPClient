@@ -91,14 +91,47 @@ namespace WindowsFTPClient.Services
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult<List<FileViewModel>>> GetListingAsync(CancellationToken cancellationToken)
+        public async Task<ServiceResult<List<FileViewModel>>> GetListingAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            FtpListItem[] listing;
+            try
+            {
+                listing = await FtpClient.GetListingAsync(cancellationToken);
+            }
+            catch (SocketException x)
+            {
+                return new ServiceResult<List<FileViewModel>> { Success = false, ErrorMessage = x.Message };
+            }
+            return new ServiceResult<List<FileViewModel>>
+            {
+                Success = true,
+                Result = listing.Select(x => new FileViewModel
+                {
+                    FullName = x.FullName,
+                    Created = x.Created,
+                    GroupPermissions = x.GroupPermissions.ToString(),
+                    Modified = x.Modified,
+                    Name = x.Name,
+                    OwnerPermissions = x.OwnerPermissions.ToString(),
+                    Permissions = x.RawPermissions,
+                    Size = x.Size,
+                    Type = x.Type
+                }).ToList()
+            };
         }
 
-        public Task<ServiceResult<string>> GetWorkingDirectoryAsync(CancellationToken cancellationToken)
+        public async Task<ServiceResult<string>> GetWorkingDirectoryAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            string directory;
+            try
+            {
+                directory = await FtpClient.GetWorkingDirectoryAsync(cancellationToken);
+            }
+            catch (SocketException x)
+            {
+                return new ServiceResult<string> { Success = false, ErrorMessage = x.Message };
+            }
+            return new ServiceResult<string> { Success = true, ErrorMessage = directory };
         }
 
         public Task<ServiceResult> MoveDirectoryAsync(string path, string dest, CancellationToken cancellationToken)
