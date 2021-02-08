@@ -102,6 +102,10 @@ namespace WindowsFTPClient.Services
             {
                 return new ServiceResult<List<FileViewModel>> { Success = false, ErrorMessage = x.Message };
             }
+            catch (FtpCommandException x)
+            {
+                return new ServiceResult<List<FileViewModel>> { Success = false, ErrorMessage = x.Message };
+            }
             return new ServiceResult<List<FileViewModel>>
             {
                 Success = true,
@@ -131,6 +135,10 @@ namespace WindowsFTPClient.Services
             {
                 return new ServiceResult<string> { Success = false, ErrorMessage = x.Message };
             }
+            catch (FtpCommandException x)
+            {
+                return new ServiceResult<string> { Success = false, ErrorMessage = x.Message };
+            }
             return new ServiceResult<string> { Success = true, Result = directory };
         }
 
@@ -149,9 +157,21 @@ namespace WindowsFTPClient.Services
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult> SetWorkingDirectoryAsync(string workingDirectory, CancellationToken cancellationToken)
+        public async Task<ServiceResult> SetWorkingDirectoryAsync(string workingDirectory, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await FtpClient.SetWorkingDirectoryAsync(workingDirectory, cancellationToken);
+            }
+            catch (SocketException x)
+            {
+                return new ServiceResult { Success = false, ErrorMessage = x.Message };
+            }
+            catch (FtpCommandException x)
+            {
+                return new ServiceResult { Success = false, ErrorMessage = x.Message };
+            }
+            return new ServiceResult { Success = true };
         }
 
         public Task<ServiceResult<List<FtpResult>>> UploadDirectoryAsync(string localFolder, string remoteFolder, IProgress<FtpProgress> progress, CancellationToken cancellationToken)

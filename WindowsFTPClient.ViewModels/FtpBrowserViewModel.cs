@@ -8,24 +8,49 @@ namespace WindowsFTPClient.ViewModels
     public class FtpBrowserViewModel : LoadableViewModel, IFtpBrowserViewModel
     {
         private IDialogService _dialogService;
+        private IWFTPClient _wFtpClient;
         private CancellationTokenSource _cancellationTokenSource;
         public FtpBrowserViewModel(IDialogService dialogService)
         {
             _dialogService = dialogService;
-            GoCommand = new DelegateCommand(this, ExecuteGo);
+            RefreshCommand = new DelegateCommand(this, ExecuteRefresh);
             Files = new ObservableCollection<FileViewModel>();
         }
 
-        public async Task ExecuteGo()
+        public async Task ExecuteRefresh()
         {
-            throw new NotImplementedException();
+            _cancellationTokenSource = new CancellationTokenSource();
+            var workingDirectoryResult = await _wFtpClient.SetWorkingDirectoryAsync(Directory, _cancellationTokenSource.Token);
+            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = null;
+            if (!workingDirectoryResult.Success)
+            {
+                _dialogService.Show(workingDirectoryResult.ErrorMessage);
+                return;
+            }
+            _cancellationTokenSource = new CancellationTokenSource();
+            Files.Clear();
+            var fileListResult = await _wFtpClient.GetListingAsync(_cancellationTokenSource.Token);
+            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = null;
+            if (!fileListResult.Success)
+            {
+                _dialogService.Show(fileListResult.ErrorMessage);
+                return;
+            }
+            foreach (var file in fileListResult.Result)
+            {
+                Files.Add(file);
+            }
         }
 
         public async void Load(IWFTPClient wFTPClient)
         {
+            _wFtpClient = wFTPClient;
             _cancellationTokenSource = new CancellationTokenSource();
-            var workingDirectoryResult = await wFTPClient.GetWorkingDirectoryAsync(_cancellationTokenSource.Token);
+            var workingDirectoryResult = await _wFtpClient.GetWorkingDirectoryAsync(_cancellationTokenSource.Token);
             _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = null;
             if (!workingDirectoryResult.Success)
             {
                 _dialogService.Show(workingDirectoryResult.ErrorMessage);
@@ -33,18 +58,7 @@ namespace WindowsFTPClient.ViewModels
                 return;
             }
             Directory = workingDirectoryResult.Result;
-            _cancellationTokenSource = new CancellationTokenSource();
-            var fileListResult = await wFTPClient.GetListingAsync(_cancellationTokenSource.Token);
-            if(!fileListResult.Success)
-            {
-                _dialogService.Show(fileListResult.ErrorMessage);
-                IsLoaded = true;
-                return;
-            }
-            foreach(var file in fileListResult.Result)
-            {
-                Files.Add(file);
-            }
+            await ExecuteRefresh();
             IsLoaded = true;
         }
         private string _directory;
@@ -62,6 +76,6 @@ namespace WindowsFTPClient.ViewModels
         }
         public ObservableCollection<FileViewModel> Files { get; }
 
-        public DelegateCommand GoCommand { get; } 
+        public DelegateCommand RefreshCommand { get; } 
     }
 }
