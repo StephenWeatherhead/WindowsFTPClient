@@ -131,7 +131,7 @@ namespace WindowsFTPClient.Services
             {
                 return new ServiceResult<string> { Success = false, ErrorMessage = x.Message };
             }
-            return new ServiceResult<string> { Success = true, ErrorMessage = directory };
+            return new ServiceResult<string> { Success = true, Result = directory };
         }
 
         public Task<ServiceResult> MoveDirectoryAsync(string path, string dest, CancellationToken cancellationToken)
