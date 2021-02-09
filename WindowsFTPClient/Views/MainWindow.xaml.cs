@@ -55,5 +55,23 @@ namespace WindowsFTPClient.Views
         {
             UpdatePassword();
         }
+
+        private void FtpBrowserListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            foreach(var item in e.AddedItems)
+            {
+                if(item is FileViewModel fvm)
+                {
+                    fvm.IsSelected = true;
+                }
+            }
+            foreach (var item in e.RemovedItems)
+            {
+                if (item is FileViewModel fvm)
+                {
+                    fvm.IsSelected = false;
+                }
+            }
+        }
     }
 }

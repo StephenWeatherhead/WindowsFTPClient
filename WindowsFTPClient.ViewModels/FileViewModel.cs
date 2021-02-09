@@ -16,5 +16,6 @@ namespace WindowsFTPClient.ViewModels
         public string GroupPermissions { get; set; }
         public DateTime Created { get; set; }
         public string FullName { get; set; }
+        public bool IsSelected { get; set; }
     }
 }

@@ -53,7 +53,7 @@
                 <TextBox Text="{Binding FtpBrowser.Directory}" />
                 <Button Content="Refresh" Grid.Column="1" Padding="3" Command="{Binding FtpBrowser.RefreshCommand}" />
             </Grid>
-            <ListView Grid.Row="1" ItemsSource="{Binding FtpBrowser.Files}">
+            <ListView x:Name="FtpBrowserListView" Grid.Row="1" ItemsSource="{Binding FtpBrowser.Files}" SelectionChanged="FtpBrowserListView_SelectionChanged">
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
