@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
+using FluentFTP;
 
 namespace WindowsFTPClient.ViewModels
 {
@@ -14,9 +17,42 @@ namespace WindowsFTPClient.ViewModels
         {
             _dialogService = dialogService;
             RefreshCommand = new DelegateCommand(this, ExecuteRefresh);
+            OpenDirectoryCommand = new DelegateCommand(this, ExecuteOpenDirectory, () => Files.Where(x => x.IsSelected).Count() == 1 && Files.Where(x => x.Type == FtpFileSystemObjectType.Directory && x.IsSelected).Count() == 1);
             Files = new ObservableCollection<FileViewModel>();
+            Files.CollectionChanged += Files_CollectionChanged;
         }
 
+        private void Files_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if(e.NewItems != null)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    if (item is FileViewModel fvm)
+                    {
+                        OpenDirectoryCommand.CanExecuteDependsOn(fvm, nameof(fvm.IsSelected));
+                    }
+                }
+            }
+            if(e.OldItems != null)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is FileViewModel fvm)
+                    {
+                        OpenDirectoryCommand.RemoveCanExecuteDependency(fvm, nameof(fvm.IsSelected));
+                    }
+                }
+            }
+            OpenDirectoryCommand.RaiseCanExecuteChanged();
+        }
+
+        public async Task ExecuteOpenDirectory()
+        {
+            var selectedFile = Files.Where(x => x.IsSelected).FirstOrDefault();
+            Directory = selectedFile.FullName;
+            await ExecuteRefresh();
+        }
         public async Task ExecuteRefresh()
         {
             _cancellationTokenSource = new CancellationTokenSource();
@@ -76,6 +112,8 @@ namespace WindowsFTPClient.ViewModels
         }
         public ObservableCollection<FileViewModel> Files { get; }
 
-        public DelegateCommand RefreshCommand { get; } 
+        public DelegateCommand RefreshCommand { get; }
+        
+        public DelegateCommand OpenDirectoryCommand { get; }
     }
 }

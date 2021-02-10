@@ -64,6 +64,11 @@
                         </GridView.Columns>
                     </GridView>
                 </ListView.View>
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Open Directory" Command="{Binding FtpBrowser.OpenDirectoryCommand}" />
+                    </ContextMenu>
+                </ListView.ContextMenu>
             </ListView>
         </Grid>
         
