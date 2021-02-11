@@ -47,11 +47,13 @@
             </Grid.RowDefinitions>
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
-                <TextBox Text="{Binding FtpBrowser.Directory}" />
-                <Button Content="Refresh" Grid.Column="1" Padding="3" Command="{Binding FtpBrowser.RefreshCommand}" />
+                <Button Content="Up" Grid.Column="0" Padding="3" Command="{Binding FtpBrowser.UpCommand}" />
+                <TextBox Grid.Column="1" Text="{Binding FtpBrowser.Directory}" />
+                <Button Content="Refresh" Grid.Column="2" Padding="3" Command="{Binding FtpBrowser.RefreshCommand}" />
             </Grid>
             <ListView x:Name="FtpBrowserListView" Grid.Row="1" ItemsSource="{Binding FtpBrowser.Files}" SelectionChanged="FtpBrowserListView_SelectionChanged">
                 <ListView.View>

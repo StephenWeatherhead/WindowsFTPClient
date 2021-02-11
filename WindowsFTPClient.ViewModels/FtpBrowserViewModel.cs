@@ -18,6 +18,8 @@ namespace WindowsFTPClient.ViewModels
             _dialogService = dialogService;
             RefreshCommand = new DelegateCommand(this, ExecuteRefresh);
             OpenDirectoryCommand = new DelegateCommand(this, ExecuteOpenDirectory, () => Files.Where(x => x.IsSelected).Count() == 1 && Files.Where(x => x.Type == FtpFileSystemObjectType.Directory && x.IsSelected).Count() == 1);
+            UpCommand = new DelegateCommand(this, ExecuteUp, ()=> Directory.Length > 1 && Directory.StartsWith("/"));
+            UpCommand.CanExecuteDependsOn(this, nameof(Directory));
             Files = new ObservableCollection<FileViewModel>();
             Files.CollectionChanged += Files_CollectionChanged;
         }
@@ -45,6 +47,23 @@ namespace WindowsFTPClient.ViewModels
                 }
             }
             OpenDirectoryCommand.RaiseCanExecuteChanged();
+        }
+
+        public async Task ExecuteUp()
+        {
+            int length = Directory.LastIndexOf('/');
+            // to account for URLs of the form "/Hello/"
+            if(length == Directory.Length - 1)
+            {
+                length = Directory.LastIndexOf('/');
+            }
+            // to account for root folder "/"
+            if (length == 0)
+            {
+                length = 1;
+            }
+            Directory = Directory.Substring(0, length);
+            await ExecuteRefresh();
         }
 
         public async Task ExecuteOpenDirectory()
@@ -115,5 +134,6 @@ namespace WindowsFTPClient.ViewModels
         public DelegateCommand RefreshCommand { get; }
         
         public DelegateCommand OpenDirectoryCommand { get; }
+        public DelegateCommand UpCommand { get; }
     }
 }
