@@ -53,14 +53,21 @@ namespace WindowsFTPClient.ViewModels
         {
             int length = Directory.LastIndexOf('/');
             // to account for URLs of the form "/Hello/"
-            if(length == Directory.Length - 1)
+            if(length != 0 && length == Directory.Length - 1)
             {
+                Directory = Directory.Substring(0, Directory.Length - 1);
                 length = Directory.LastIndexOf('/');
             }
             // to account for root folder "/"
             if (length == 0)
             {
                 length = 1;
+            }
+            // to account for errors
+            else if(length < 0)
+            {
+                _dialogService.Show("Could not parse URL, is this a valid URL?");
+                return;
             }
             Directory = Directory.Substring(0, length);
             await ExecuteRefresh();
