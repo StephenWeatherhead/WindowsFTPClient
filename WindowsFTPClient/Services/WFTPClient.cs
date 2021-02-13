@@ -53,14 +53,38 @@ namespace WindowsFTPClient.Services
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult> DeleteDirectoryAsync(string path, CancellationToken cancellationtoken)
+        public async Task<ServiceResult> DeleteDirectoryAsync(string path, CancellationToken cancellationtoken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await FtpClient.DeleteDirectoryAsync(path, cancellationtoken);
+            }
+            catch (SocketException x)
+            {
+                return new ServiceResult { Success = false, ErrorMessage = x.Message };
+            }
+            catch (FtpCommandException x)
+            {
+                return new ServiceResult { Success = false, ErrorMessage = x.Message };
+            }
+            return new ServiceResult { Success = true };
         }
 
-        public Task<ServiceResult> DeleteFileAsync(string path, CancellationToken cancellationtoken)
+        public async Task<ServiceResult> DeleteFileAsync(string path, CancellationToken cancellationtoken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await FtpClient.DeleteFileAsync(path, cancellationtoken);
+            }
+            catch (SocketException x)
+            {
+                return new ServiceResult { Success = false, ErrorMessage = x.Message };
+            }
+            catch (FtpCommandException x)
+            {
+                return new ServiceResult { Success = false, ErrorMessage = x.Message };
+            }
+            return new ServiceResult { Success = true };
         }
 
         public async Task<ServiceResult> DisconnectAsync(CancellationToken cancellationToken)

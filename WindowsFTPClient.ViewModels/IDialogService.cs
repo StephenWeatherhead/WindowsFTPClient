@@ -7,5 +7,6 @@ namespace WindowsFTPClient.ViewModels
     public interface IDialogService
     {
         void Show(string message);
+        bool? YesNo(string message);
     }
 }

@@ -14,5 +14,19 @@ namespace WindowsFTPClient.Services
         {
             MessageBox.Show(Application.Current.MainWindow,message);
         }
+
+        public bool? YesNo(string message)
+        {
+            var result = MessageBox.Show(Application.Current.MainWindow, message, string.Empty, MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                return true;
+            }
+            else if(result == MessageBoxResult.No)
+            {
+                return false;
+            }
+            return null;
+        }
     }
 }

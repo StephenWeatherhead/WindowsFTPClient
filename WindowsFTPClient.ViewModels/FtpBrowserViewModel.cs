@@ -22,6 +22,7 @@ namespace WindowsFTPClient.ViewModels
             UpCommand.CanExecuteDependsOn(this, nameof(Directory));
             Files = new ObservableCollection<FileViewModel>();
             Files.CollectionChanged += Files_CollectionChanged;
+            DeleteCommand = new DelegateCommand(this, ExecuteDelete, () => Files.Any(x => x.IsSelected));
         }
 
         private void Files_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -33,6 +34,7 @@ namespace WindowsFTPClient.ViewModels
                     if (item is FileViewModel fvm)
                     {
                         OpenDirectoryCommand.CanExecuteDependsOn(fvm, nameof(fvm.IsSelected));
+                        DeleteCommand.CanExecuteDependsOn(fvm, nameof(fvm.IsSelected));
                     }
                 }
             }
@@ -43,10 +45,47 @@ namespace WindowsFTPClient.ViewModels
                     if (item is FileViewModel fvm)
                     {
                         OpenDirectoryCommand.RemoveCanExecuteDependency(fvm, nameof(fvm.IsSelected));
+                        DeleteCommand.RemoveCanExecuteDependency(fvm, nameof(fvm.IsSelected));
                     }
                 }
             }
             OpenDirectoryCommand.RaiseCanExecuteChanged();
+            DeleteCommand.RaiseCanExecuteChanged();
+        }
+
+        public async Task ExecuteDelete()
+        {
+            if(!_dialogService.YesNo("Are you sure you would like to delete these files?") == true)
+            {
+                return;
+            }
+            foreach (var fvm in Files.Where(x => x.IsSelected))
+            {
+                ServiceResult result;
+                if(fvm.Type == FtpFileSystemObjectType.Directory)
+                {
+                    _cancellationTokenSource = new CancellationTokenSource();
+                    result = await _wFtpClient.DeleteDirectoryAsync(fvm.FullName, _cancellationTokenSource.Token);
+                    _cancellationTokenSource.Dispose();
+                }
+                else if(fvm.Type == FtpFileSystemObjectType.File)
+                {
+                    _cancellationTokenSource = new CancellationTokenSource();
+                    result = await _wFtpClient.DeleteFileAsync(fvm.FullName, _cancellationTokenSource.Token);
+                    _cancellationTokenSource.Dispose();
+                }
+                else
+                {
+                    continue;
+                }
+                if (!result.Success)
+                {
+                    _dialogService.Show(result.ErrorMessage);
+                    await ExecuteRefresh();
+                    break;
+                }
+            }
+            await ExecuteRefresh();
         }
 
         public async Task ExecuteUp()
@@ -142,5 +181,6 @@ namespace WindowsFTPClient.ViewModels
         
         public DelegateCommand OpenDirectoryCommand { get; }
         public DelegateCommand UpCommand { get; }
+        public DelegateCommand DeleteCommand { get; }
     }
 }
