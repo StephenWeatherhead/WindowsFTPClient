@@ -80,7 +80,7 @@ namespace WindowsFTPClient.ViewModels
                 }
                 if (!result.Success)
                 {
-                    _dialogService.Show(result.ErrorMessage);
+                    _dialogService.Show($"Could not delete {fvm.FullName}{Environment.NewLine}{result.ErrorMessage}");
                     await ExecuteRefresh();
                     break;
                 }
