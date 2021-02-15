@@ -23,6 +23,7 @@ namespace WindowsFTPClient.ViewModels
             Files = new ObservableCollection<FileViewModel>();
             Files.CollectionChanged += Files_CollectionChanged;
             DeleteCommand = new DelegateCommand(this, ExecuteDelete, () => Files.Any(x => x.IsSelected));
+            RenameCommand = new DelegateCommand(this, ExecuteRename, ()=> Files.Where(x => x.IsSelected && (x.Type == FtpFileSystemObjectType.Directory || x.Type == FtpFileSystemObjectType.File)).Count() == 1);
         }
 
         private void Files_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -35,6 +36,7 @@ namespace WindowsFTPClient.ViewModels
                     {
                         OpenDirectoryCommand.CanExecuteDependsOn(fvm, nameof(fvm.IsSelected));
                         DeleteCommand.CanExecuteDependsOn(fvm, nameof(fvm.IsSelected));
+                        RenameCommand.CanExecuteDependsOn(fvm, nameof(fvm.IsSelected));
                     }
                 }
             }
@@ -46,11 +48,49 @@ namespace WindowsFTPClient.ViewModels
                     {
                         OpenDirectoryCommand.RemoveCanExecuteDependency(fvm, nameof(fvm.IsSelected));
                         DeleteCommand.RemoveCanExecuteDependency(fvm, nameof(fvm.IsSelected));
+                        RenameCommand.RemoveCanExecuteDependency(fvm, nameof(fvm.IsSelected));
                     }
                 }
             }
             OpenDirectoryCommand.RaiseCanExecuteChanged();
             DeleteCommand.RaiseCanExecuteChanged();
+            RenameCommand.RaiseCanExecuteChanged();
+        }
+
+        public async Task ExecuteRename()
+        {
+            var fvm = Files.Where(x => x.IsSelected).Single();
+            string newName = _dialogService.Prompt("Rename","What would you like to name the file?", fvm.Name);
+            if(newName.Contains("/"))
+            {
+                _dialogService.Show("Name cannot contain \"/\"");
+                return;
+            }
+            if(string.IsNullOrWhiteSpace(newName))
+            {
+                return;
+            }
+            if(Files.Any(x=> string.Equals(newName, x.Name, StringComparison.InvariantCultureIgnoreCase) && fvm.Type == x.Type))
+            {
+                _dialogService.Show("A file with this name already exists");
+                return;
+            }
+            string newPath = fvm.FullName.Substring(0, fvm.FullName.LastIndexOf('/')) + newName;
+            _cancellationTokenSource = new CancellationTokenSource();
+            ServiceResult renameResult;
+            if (fvm.Type == FtpFileSystemObjectType.File)
+            {
+                renameResult = await _wFtpClient.MoveFileAsync(fvm.FullName, newPath, _cancellationTokenSource.Token);
+            }
+            else
+            {
+                renameResult = await _wFtpClient.MoveDirectoryAsync(fvm.FullName, newPath, _cancellationTokenSource.Token);
+            }
+            if(!renameResult.Success)
+            {
+                _dialogService.Show(renameResult.ErrorMessage);
+            }
+            await ExecuteRefresh();
         }
 
         public async Task ExecuteDelete()
@@ -182,5 +222,6 @@ namespace WindowsFTPClient.ViewModels
         public DelegateCommand OpenDirectoryCommand { get; }
         public DelegateCommand UpCommand { get; }
         public DelegateCommand DeleteCommand { get; }
+        public DelegateCommand RenameCommand { get; }
     }
 }

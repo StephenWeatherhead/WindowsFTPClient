@@ -166,14 +166,38 @@ namespace WindowsFTPClient.Services
             return new ServiceResult<string> { Success = true, Result = directory };
         }
 
-        public Task<ServiceResult> MoveDirectoryAsync(string path, string dest, CancellationToken cancellationToken)
+        public async Task<ServiceResult> MoveDirectoryAsync(string path, string dest, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await FtpClient.MoveDirectoryAsync(path, dest, token: cancellationToken);
+            }
+            catch (SocketException x)
+            {
+                return new ServiceResult { Success = false, ErrorMessage = x.Message };
+            }
+            catch (FtpCommandException x)
+            {
+                return new ServiceResult { Success = false, ErrorMessage = x.Message };
+            }
+            return new ServiceResult { Success = true };
         }
 
-        public Task<ServiceResult> MoveFileAsync(string path, string dest, CancellationToken cancellationToken)
+        public async Task<ServiceResult> MoveFileAsync(string path, string dest, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await FtpClient.MoveFileAsync(path, dest, token: cancellationToken);
+            }
+            catch (SocketException x)
+            {
+                return new ServiceResult { Success = false, ErrorMessage = x.Message };
+            }
+            catch (FtpCommandException x)
+            {
+                return new ServiceResult { Success = false, ErrorMessage = x.Message };
+            }
+            return new ServiceResult { Success = true };
         }
 
         public Task<ServiceResult> SetFilePermissionsAsync(string path, FtpPermission owner, FtpPermission group, FtpPermission other, CancellationToken cancellationToken)

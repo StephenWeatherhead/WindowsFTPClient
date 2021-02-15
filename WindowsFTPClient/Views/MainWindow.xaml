@@ -73,6 +73,7 @@
                 <ListView.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Open Directory" Command="{Binding FtpBrowser.OpenDirectoryCommand}" />
+                        <MenuItem Header="Rename" Command="{Binding FtpBrowser.RenameCommand}" />
                         <MenuItem Header="Delete" Command="{Binding FtpBrowser.DeleteCommand}" />
                     </ContextMenu>
                 </ListView.ContextMenu>
