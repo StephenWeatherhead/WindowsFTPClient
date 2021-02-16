@@ -60,10 +60,10 @@ namespace WindowsFTPClient.ViewModels
         public async Task ExecuteRename()
         {
             var fvm = Files.Where(x => x.IsSelected).Single();
-            string newName = _dialogService.Prompt("Rename","What would you like to name the file?", fvm.Name);
+            string newName = _dialogService.Prompt(ViewModelStrings.GetRenameCaption(), ViewModelStrings.GetRenameQuestion(), fvm.Name);
             if(newName.Contains("/"))
             {
-                _dialogService.Show("Name cannot contain \"/\"");
+                _dialogService.Show(ViewModelStrings.GetNameSlashError());
                 return;
             }
             if(string.IsNullOrWhiteSpace(newName))
@@ -72,7 +72,7 @@ namespace WindowsFTPClient.ViewModels
             }
             if(Files.Any(x=> string.Equals(newName, x.Name, StringComparison.InvariantCultureIgnoreCase) && fvm.Type == x.Type))
             {
-                _dialogService.Show("A file with this name already exists");
+                _dialogService.Show(ViewModelStrings.GetFileExists());
                 return;
             }
             string newPath = fvm.FullName.Substring(0, fvm.FullName.LastIndexOf('/')) + newName;
@@ -95,7 +95,7 @@ namespace WindowsFTPClient.ViewModels
 
         public async Task ExecuteDelete()
         {
-            if(!_dialogService.YesNo("Are you sure you would like to delete these files?") == true)
+            if(!_dialogService.YesNo(ViewModelStrings.GetConfirmDelete()) == true)
             {
                 return;
             }
@@ -120,7 +120,7 @@ namespace WindowsFTPClient.ViewModels
                 }
                 if (!result.Success)
                 {
-                    _dialogService.Show($"Could not delete {fvm.FullName}{Environment.NewLine}{result.ErrorMessage}");
+                    _dialogService.Show(ViewModelStrings.CouldNotDelete(fvm.FullName, result.ErrorMessage));
                     await ExecuteRefresh();
                     break;
                 }
@@ -145,7 +145,7 @@ namespace WindowsFTPClient.ViewModels
             // to account for errors
             else if(length < 0)
             {
-                _dialogService.Show("Could not parse URL, is this a valid URL?");
+                _dialogService.Show(ViewModelStrings.GetCouldNotParseURL());
                 return;
             }
             Directory = Directory.Substring(0, length);
